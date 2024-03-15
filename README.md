@@ -1,3 +1,1 @@
-# Projection Test
-
-On-going cognitive science research
+# Projection Experiment
