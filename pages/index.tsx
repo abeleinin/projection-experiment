@@ -6,25 +6,27 @@ import Board from '../components/board'
 import Titlescreen from '../components/titlescreen'
 import timeout from '../components/util'
 import RandomLayout from '../components/layout/random_layout'
-import GridLayout from '../components/layout/grid_layout'
 import Navbar from '../components/navbar'
 // import Level from '../components/level'
 
+const PAD = 5
+
 function VisualMemory() {
-  const [isOn, setIsOn] = useState(false)
+  const [isOn, setIsOn] = useState(true) // TODO: Change to false
   const [isOver, setIsOver] = useState(false)
-  const numberTiles = 25
+  const numberTiles = 36
   const numberList = Array.from(Array(numberTiles).keys()).map(i =>
     i.toString()
   )
 
-  const [test] = useState(false)
+  const [restartGame, setRestartGame] = useState(false)
   const [enableFlash, setEnableFlash] = useState(false)
   const [enableInvisible, setEnableInvisible] = useState(false)
   const [enableMovement, setEnableMovement] = useState(false)
 
-  const [grid, setGrid] = useState(false)
-  const [shuffle, setShuffle] = useState(false)
+  const [shuffle, setShuffle] = useState(true) // TODO: Change to false
+
+  const [dimensions, setDimensions] = useState({ width: 0, height: 0 })
 
   const initPlay = {
     isDisplay: false,
@@ -63,7 +65,6 @@ function VisualMemory() {
       setIsOn(false)
       setPlay(initPlay)
       setShuffle(false)
-      setGrid(false)
       setButtonPositions([])
       setEnableFlash(false)
       setEnableInvisible(false)
@@ -152,19 +153,25 @@ function VisualMemory() {
 
   async function shuffleTiles() {
     let positions = []
+    let maxLeft, maxTop, maxRight, maxBottom
     numberList.forEach(() => {
       let newPos, overlap
       do {
         newPos = {
-          left: Math.floor(Math.random() * 40),
-          top: Math.floor(Math.random() * 40)
+          left: Math.floor(40 * Math.random()),
+          top: Math.floor(40 * Math.random())
         }
-        newPos.right = newPos.left + 5.5
-        newPos.bottom = newPos.top + 5.5
+        newPos.right = newPos.left + PAD
+        newPos.bottom = newPos.top + PAD
         overlap = checkOverlap(newPos, positions)
       } while (overlap)
+      Math.max(newPos.right, maxRight)
+      Math.min(newPos.left, maxLeft)
+      Math.max(newPos.bottom, maxBottom)
+      Math.min(newPos.top, maxTop)
       positions.push(newPos)
     })
+    setDimensions({ width: maxRight - maxLeft, height: maxBottom - maxTop })
     setButtonPositions(positions)
     setShuffleArangement(positions)
   }
@@ -284,60 +291,36 @@ function VisualMemory() {
     }
   }
 
-  if (isOn) {
-    if (shuffle) {
-      return (
-        <Board>
-          <Box>
-            {/* <Level>{play.score}</Level> */}
-            <Navbar
-              play={play}
-              setplay={setPlay}
-              resetToggle={setRestartGame}
-              onFeatureToggle={{
-                Flash: setEnableFlash,
-                Invisible: setEnableInvisible,
-                Movement: setEnableMovement
-              }}
-            />
-            <RandomLayout
-              numberList={numberList}
-              tileClickHandle={tileClickHandle}
-              rewardTile={rewardTile}
-              wrongTile={wrongTile}
-              flashTile={flashTile}
-              buttonPositions={buttonPositions}
-              flashIntensity={currFlashIntensity}
-            />
-          </Box>
-        </Board>
-      )
-    } else if (grid) {
-      return (
-        <Board>
-          <Box>
-            {/* <Level>{play.score}</Level> */}
-            <Navbar
-              play={play}
-              setplay={setPlay}
-              resetToggle={setRestartGame}
-              onFeatureToggle={{
-                Flash: setEnableFlash,
-                Invisible: setEnableInvisible
-              }}
-            />
-            <GridLayout
-              numberList={numberList}
-              tileClickHandle={tileClickHandle}
-              rewardTile={rewardTile}
-              wrongTile={wrongTile}
-              flashTile={flashTile}
-              flashIntensity={currFlashIntensity}
-            />
-          </Box>
-        </Board>
-      )
-    }
+  if (isOn && shuffle) {
+    return (
+      <Board>
+        <Box>
+          {' '}
+          {/* <Level>{play.score}</Level> */}
+          <Navbar
+            play={play}
+            setplay={setPlay}
+            resetToggle={setRestartGame}
+            onFeatureToggle={{
+              Flash: setEnableFlash,
+              Invisible: setEnableInvisible,
+              Movement: setEnableMovement
+            }}
+          />
+          <RandomLayout
+            numberList={numberList}
+            tileClickHandle={tileClickHandle}
+            rewardTile={rewardTile}
+            wrongTile={wrongTile}
+            flashTile={flashTile}
+            buttonPositions={buttonPositions}
+            flashIntensity={currFlashIntensity}
+            width={dimensions.width}
+            height={dimensions.height}
+          />
+        </Box>
+      </Board>
+    )
   } else if (isOver) {
     return (
       <Board>
@@ -360,8 +343,8 @@ function VisualMemory() {
         <Titlescreen
           title="Visual-Spatial Memory"
           symbol="🧠"
-          button={['Grid', 'Random']}
-          onStatusChange={{ grid: setGrid, shuffle: setShuffle, on: setIsOn }}
+          button={'Random'}
+          onStatusChange={{ shuffle: setShuffle, on: setIsOn }}
         >
           Welcome to the <b>Projection Experiment Playground</b>! Try either the
           <br />

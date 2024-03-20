@@ -14,8 +14,7 @@ const Titlescreen = ({
 }) => {
   const [localState, setLocalState] = useState({
     on: false,
-    shuffle: false,
-    grid: false
+    shuffle: false
   })
 
   const changeGame = useCallback(() => {
@@ -27,14 +26,8 @@ const Titlescreen = ({
     onStatusChange.shuffle(!localState.shuffle)
   }, [onStatusChange.shuffle])
 
-  const chooseGrid = useCallback(() => {
-    setLocalState({ ...localState, grid: !localState.grid })
-    onStatusChange.grid(!localState.grid)
-  }, [onStatusChange.grid])
-
   const handleGridStart = () => {
     changeGame()
-    chooseGrid()
   }
 
   const handleShuffleStart = () => {
@@ -64,20 +57,9 @@ const Titlescreen = ({
           color="#000"
           fontSize="14pt"
           marginRight="1rem"
-          onClick={handleGridStart}
-        >
-          {button[0]}
-        </Button>
-        <Button
-          bg="yellow.400"
-          _hover={{ bg: 'yellow.300' }}
-          my={4}
-          color="#000"
-          fontSize="14pt"
-          marginRight="1rem"
           onClick={handleShuffleStart}
         >
-          {button[1]}
+          {button}
         </Button>
       </Box>
     </motion.div>

@@ -1,4 +1,4 @@
-import { Box, Button } from '@chakra-ui/react'
+import { Center, Box, Button } from '@chakra-ui/react'
 import { memo } from 'react'
 
 interface RandomLayoutProps {
@@ -10,6 +10,8 @@ interface RandomLayoutProps {
   flashTile: string[]
   buttonPositions: any[]
   flashIntensity: string
+  width: number
+  height: number
 }
 
 const RandomLayout: React.FC<RandomLayoutProps> = memo(function RandomLayout({
@@ -19,12 +21,13 @@ const RandomLayout: React.FC<RandomLayoutProps> = memo(function RandomLayout({
   wrongTile,
   flashTile,
   buttonPositions,
-  flashIntensity
+  flashIntensity,
+  width,
+  height
 }) {
   return (
     // <Box position="relative" width="50vw" height="80vh" left="10em" (Translation mask using left and top attr)>
-    // <Box position="relative" width="50vw" height="80vh">
-    <Box position="relative" width="50vw" height="80vh">
+    <Box position="relative" width="100vw" height="100vh">
       {numberList.map((v, index) => (
         <Button
           key={v}
