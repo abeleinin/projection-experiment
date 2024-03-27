@@ -6,6 +6,7 @@ import Board from '../components/board'
 import timeout from '../components/util'
 import RandomLayout from '../components/layout/random_layout'
 import ConsentFrom from './consent'
+import { time } from 'console'
 
 const PAD = 5
 
@@ -17,7 +18,7 @@ function VisualMemory() {
     i.toString()
   )
   const maskType = ['noMask', 'shuffleMask', 'invisibleMask', 'flashMask']
-  const trialCount = 4
+  const trialCount = 30
 
   const [restartGame, setRestartGame] = useState(false)
 
@@ -29,6 +30,16 @@ function VisualMemory() {
     correct: 0
   }
 
+  const initResponseData = {
+    userGuess: [],
+    userReactionTime: []
+  }
+
+  const initBoardData = {
+    tilePattern: [],
+    tilePosition: []
+  }
+
   const initPlay = {
     isDisplay: false,
     userTurn: false,
@@ -36,10 +47,11 @@ function VisualMemory() {
     shuffleData: { ...initMaskData },
     invisibleData: { ...initMaskData },
     flashData: { ...initMaskData },
-    tilePattern: [],
-    userGuess: [],
+    userResponse: { ...initResponseData },
+    boardData: { ...initBoardData },
+    currTilePattern: [],
     mask: [],
-    userCorrect: []
+    userCorrect: [] // TODO: Remove
   }
 
   const [play, setPlay] = useState(initPlay)
@@ -54,10 +66,14 @@ function VisualMemory() {
   const [shuffleArangement, setShuffleArangement] = useState([])
 
   const [userData, setUserData] = useState({
+    responseData: [],
     noMaskData: {},
     shuffleData: {},
     invisibleData: {},
     flashData: {},
+    boardData: [],
+    // tilePattern: {},
+    // tilePositions: [],
     mask: [],
     Date: new Date()
   })
@@ -116,6 +132,7 @@ function VisualMemory() {
     if (isOn && play.isDisplay) {
       let patternIdsSet = new Set()
 
+      shuffleTiles()
       setUserData({ ...userData, mask: play.mask, Date: new Date() })
 
       // Select pattern size based on mask
@@ -123,31 +140,31 @@ function VisualMemory() {
       switch (play.mask[playerTrial]) {
         case 'noMask':
           patternSize = play.noMaskData.score
-          console.log('No Mask')
-          console.log(play.noMaskData.score)
-          console.log(play.noMaskData.successCount)
-          console.log(play.noMaskData.correct)
+          // console.log('No Mask')
+          // console.log(play.noMaskData.score)
+          // console.log(play.noMaskData.successCount)
+          // console.log(play.noMaskData.correct)
           break
         case 'shuffleMask':
           patternSize = play.shuffleData.score
-          console.log('Shuffle Mask')
-          console.log(play.shuffleData.score)
-          console.log(play.shuffleData.successCount)
-          console.log(play.shuffleData.correct)
+          // console.log('Shuffle Mask')
+          // console.log(play.shuffleData.score)
+          // console.log(play.shuffleData.successCount)
+          // console.log(play.shuffleData.correct)
           break
         case 'invisibleMask':
           patternSize = play.invisibleData.score
-          console.log('Invisible Mask')
-          console.log(play.invisibleData.score)
-          console.log(play.invisibleData.successCount)
-          console.log(play.invisibleData.correct)
+          // console.log('Invisible Mask')
+          // console.log(play.invisibleData.score)
+          // console.log(play.invisibleData.successCount)
+          // console.log(play.invisibleData.correct)
           break
         case 'flashMask':
           patternSize = play.flashData.score
-          console.log('Flash Mask')
-          console.log(play.flashData.score)
-          console.log(play.flashData.successCount)
-          console.log(play.flashData.correct)
+          // console.log('Flash Mask')
+          // console.log(play.flashData.score)
+          // console.log(play.flashData.successCount)
+          // console.log(play.flashData.correct)
           break
       }
 
@@ -157,7 +174,13 @@ function VisualMemory() {
       }
 
       let patternIds = Array.from(patternIdsSet)
-      setPlay({ ...play, tilePattern: patternIds })
+
+      let data = initBoardData
+      data.tilePattern = patternIds
+      data.tilePosition = buttonPositions
+
+      setUserData({ ...userData, boardData: [...userData.boardData, data] })
+      setPlay({ ...play, currTilePattern: patternIds })
     }
   }, [isOn, play.isDisplay])
 
@@ -167,6 +190,7 @@ function VisualMemory() {
     let numTrials = maskType.length * trialCount - 1
     if (playerTrial > numTrials) {
       setUserData({
+        ...userData,
         noMaskData: play.noMaskData,
         shuffleData: play.shuffleData,
         invisibleData: play.invisibleData,
@@ -176,10 +200,10 @@ function VisualMemory() {
       })
       setIsOver(true)
       setIsOn(false)
-    } else if (isOn && play.isDisplay && play.tilePattern.length) {
+    } else if (isOn && play.isDisplay && play.currTilePattern.length) {
       displayTiles()
     }
-  }, [isOn, play.isDisplay, play.tilePattern.length])
+  }, [isOn, play.isDisplay, play.currTilePattern.length])
 
   const checkOverlap = (newPos, existingPositions) => {
     for (let pos of existingPositions) {
@@ -222,7 +246,7 @@ function VisualMemory() {
 
   async function displayTiles() {
     await timeout(1000)
-    setFlashTile(play.tilePattern)
+    setFlashTile(play.currTilePattern)
     let positions = []
 
     // Set mask effect duration in milliseconds
@@ -260,18 +284,33 @@ function VisualMemory() {
     setPlay({ ...play, isDisplay: false, userTurn: true })
   }
 
+  let [prevTime, setPrevTime] = useState(null)
+
   async function tileClickHandle(number) {
     if (!play.isDisplay && play.userTurn) {
+      let currTime = performance.now()
+
+      let reactionTime = prevTime ? currTime - prevTime : 0
+
+      setPrevTime(currTime)
+
       let userGuess = number.toString()
-      play.userGuess.push(userGuess)
-      if (play.tilePattern.includes(userGuess)) {
-        let correct = play.userGuess.filter(guess =>
-          play.tilePattern.includes(guess)
+      play.userResponse.userGuess = [...play.userResponse.userGuess, userGuess]
+      play.userResponse.userReactionTime = [
+        ...play.userResponse.userReactionTime,
+        reactionTime
+      ]
+      if (play.currTilePattern.includes(userGuess)) {
+        let correct = play.userResponse.userGuess.filter(guess =>
+          play.currTilePattern.includes(guess)
         )
         setFlashTile(correct)
-        if (play.tilePattern.length === new Set(play.userGuess).size) {
+        if (
+          play.currTilePattern.length ===
+          new Set(play.userResponse.userGuess).size
+        ) {
           await timeout(500)
-          setRewardTile(play.tilePattern)
+          setRewardTile(play.currTilePattern)
           await timeout(500)
           setRewardTile([])
           setFlashTile(numberList)
@@ -280,6 +319,12 @@ function VisualMemory() {
 
           // Update correct answer in database here
           setPlayerTrial(playerTrial + 1)
+
+          setUserData({
+            ...userData,
+            responseData: [...userData.responseData, play.userResponse]
+          })
+
           switch (play.mask[playerTrial]) {
             case 'noMask':
               play.noMaskData.correct += 1
@@ -328,8 +373,8 @@ function VisualMemory() {
             isDisplay: true,
             userTurn: false,
             userCorrect: [...play.userCorrect, 1],
-            tilePattern: [],
-            userGuess: []
+            userResponse: { ...initResponseData },
+            currTilePattern: []
           })
         }
       } else {
@@ -342,8 +387,13 @@ function VisualMemory() {
         await timeout(500)
         setFlashTile([])
 
-        // TODO: Update incorrect answer in database here
         setPlayerTrial(playerTrial + 1)
+
+        setUserData({
+          ...userData,
+          responseData: [...userData.responseData, play.userResponse]
+        })
+
         switch (play.mask[playerTrial]) {
           case 'noMask':
             play.noMaskData.score -= 1
@@ -371,8 +421,8 @@ function VisualMemory() {
           isDisplay: true,
           userTurn: false,
           userCorrect: [...play.userCorrect, 0],
-          tilePattern: [],
-          userGuess: []
+          userResponse: { ...initResponseData },
+          currTilePattern: []
         })
       }
     }
@@ -383,16 +433,6 @@ function VisualMemory() {
       <Board>
         <Box>
           {' '}
-          {/* <Navbar
-            play={play}
-            setplay={setPlay}
-            resetToggle={setRestartGame}
-            onFeatureToggle={{
-              Flash: setEnableFlash,
-              Invisible: setEnableInvisible,
-              Movement: setEnableMovement
-            }}
-          /> */}
           <RandomLayout
             numberList={numberList}
             tileClickHandle={tileClickHandle}
