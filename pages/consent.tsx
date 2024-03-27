@@ -3,6 +3,7 @@ import { Box, Text, Heading, Checkbox, Button } from '@chakra-ui/react'
 import { useAuth } from '../contexts/AuthContext'
 import { useNavigate } from 'react-router-dom'
 import { useDB } from '../contexts/DatabaseContext'
+import { signInAnonymously } from 'firebase/auth'
 
 const ConsentFrom = ({ onStatusChange }) => {
   const [isChecked, setIsChecked] = useState(false)
@@ -13,7 +14,7 @@ const ConsentFrom = ({ onStatusChange }) => {
     onStatusChange.on(true)
   }, [onStatusChange.on])
 
-  const { handleAnonSignIn } = useAuth()
+  const { anonymouslySignIn } = useAuth()
   const { setData } = useDB()
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
@@ -23,20 +24,15 @@ const ConsentFrom = ({ onStatusChange }) => {
 
     try {
       setLoading(true)
-      const uid = await handleAnonSignIn()
+      const uid = await anonymouslySignIn()
       await setData(uid)
       navigate('/')
     } catch (e) {
-      console.log('RIP', e)
+      console.log('Error:', e)
     }
     setLoading(false)
     changeGame()
   }
-
-  // const handleShuffleStart = () => {
-  //   handleSubmit()
-  //   changeGame()
-  // }
 
   return (
     <Box id="consent" p="2">

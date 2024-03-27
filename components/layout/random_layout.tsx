@@ -26,7 +26,6 @@ const RandomLayout: React.FC<RandomLayoutProps> = memo(function RandomLayout({
   height
 }) {
   return (
-    // <Box position="relative" width="100vw" height="100vh">
     <Box position="relative" width="40vw" height="80vh">
       {numberList.map((v, index) => (
         <Button

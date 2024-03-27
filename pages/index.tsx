@@ -5,7 +5,6 @@ import { useDB } from '../contexts/DatabaseContext'
 import Board from '../components/board'
 import timeout from '../components/util'
 import RandomLayout from '../components/layout/random_layout'
-import Navbar from '../components/navbar'
 import ConsentFrom from './consent'
 
 const PAD = 5
@@ -55,7 +54,10 @@ function VisualMemory() {
   const [shuffleArangement, setShuffleArangement] = useState([])
 
   const [userData, setUserData] = useState({
-    correct: [],
+    noMaskData: {},
+    shuffleData: {},
+    invisibleData: {},
+    flashData: {},
     mask: [],
     Date: new Date()
   })
@@ -85,7 +87,6 @@ function VisualMemory() {
       })
       // Randomize possible masks
       let mask = maskDistribution.sort(() => 0.5 - Math.random())
-      // console.log(mask)
       setPlay({ ...initPlay, mask: mask, isDisplay: true })
     } else if (currentUser !== null) {
       getData()
@@ -95,9 +96,9 @@ function VisualMemory() {
               userGameHistory.visual = new Array()
             }
 
-            if (userData.correct.length > 1) {
+            if (Object.keys(userData.mask).length > 0) {
               userGameHistory.visual.push(userData)
-              updateData(currentUser.uid, 'visual', userGameHistory.visual)
+              updateData(currentUser.uid, 'projection', userGameHistory.visual)
             }
           } else {
             console.error('Failed to get user game history')
@@ -115,7 +116,7 @@ function VisualMemory() {
     if (isOn && play.isDisplay) {
       let patternIdsSet = new Set()
 
-      setUserData({ correct: [], mask: play.mask, Date: new Date() })
+      setUserData({ ...userData, mask: play.mask, Date: new Date() })
 
       // Select pattern size based on mask
       let patternSize
@@ -162,10 +163,14 @@ function VisualMemory() {
 
   // Display sequence of tiles
   useEffect(() => {
+    // Calculate the number of trials to run
     let numTrials = maskType.length * trialCount - 1
     if (playerTrial > numTrials) {
       setUserData({
-        correct: play.userCorrect,
+        noMaskData: play.noMaskData,
+        shuffleData: play.shuffleData,
+        invisibleData: play.invisibleData,
+        flashData: play.flashData,
         mask: play.mask,
         Date: new Date()
       })
@@ -218,6 +223,7 @@ function VisualMemory() {
   async function displayTiles() {
     await timeout(1000)
     setFlashTile(play.tilePattern)
+    let positions = []
 
     // Set mask effect duration in milliseconds
     let maskEffectDuration = 2000
@@ -236,20 +242,21 @@ function VisualMemory() {
         setFlashTile(numberList)
         break
       case 'shuffleMask':
-        let positions = shuffleArangement
+        positions = shuffleArangement
         await timeout(maskEffectDuration)
         setFlashTile([])
         await timeout(500)
         shuffleTiles()
-        await timeout(1000)
-        setButtonPositions(positions)
-        setShuffleArangement(positions)
         break
     }
 
     await timeout(1000)
     setFlashTile([])
     setCurrFlashIntensity('1')
+    if (positions.length > 0) {
+      setButtonPositions(positions)
+      setShuffleArangement(positions)
+    }
     setPlay({ ...play, isDisplay: false, userTurn: true })
   }
 
