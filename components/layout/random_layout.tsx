@@ -1,4 +1,4 @@
-import { Center, Box, Button } from '@chakra-ui/react'
+import { Flex, Center, Box, Button } from '@chakra-ui/react'
 import { memo } from 'react'
 
 interface RandomLayoutProps {
@@ -26,8 +26,8 @@ const RandomLayout: React.FC<RandomLayoutProps> = memo(function RandomLayout({
   height
 }) {
   return (
-    // <Box position="relative" width="50vw" height="80vh" left="10em" (Translation mask using left and top attr)>
-    <Box position="relative" width="100vw" height="100vh">
+    // <Box position="relative" width="100vw" height="100vh">
+    <Box position="relative" width="40vw" height="80vh">
       {numberList.map((v, index) => (
         <Button
           key={v}
