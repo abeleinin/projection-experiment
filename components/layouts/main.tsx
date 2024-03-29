@@ -12,8 +12,6 @@ const Main = ({ children }) => {
       <Container maxWidth="100%" h="100vh" px={0}>
         {children}
       </Container>
-
-      {/* <Footer /> */}
     </Box>
   )
 }

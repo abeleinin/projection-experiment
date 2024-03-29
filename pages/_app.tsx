@@ -5,6 +5,7 @@ import { DatabaseProvider } from '../contexts/DatabaseContext'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import theme from '../lib/theme'
 import Home from './index'
+import VisualMemory from './game'
 
 const Website = () => {
   return (
@@ -15,6 +16,7 @@ const Website = () => {
             <Layout>
               <Routes>
                 <Route index element={<Home />}></Route>
+                <Route path={'/game'} element={<VisualMemory />}></Route>
               </Routes>
             </Layout>
           </Router>

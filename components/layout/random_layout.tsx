@@ -21,9 +21,7 @@ const RandomLayout: React.FC<RandomLayoutProps> = memo(function RandomLayout({
   wrongTile,
   flashTile,
   buttonPositions,
-  flashIntensity,
-  width,
-  height
+  flashIntensity
 }) {
   return (
     <Box position="relative" width="40vw" height="80vh">

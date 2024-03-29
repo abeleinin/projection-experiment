@@ -1,37 +1,30 @@
 import { useCallback, useState } from 'react'
-import { Box, Text, Heading, Checkbox, Button } from '@chakra-ui/react'
-import { useAuth } from '../contexts/AuthContext'
 import { useNavigate } from 'react-router-dom'
-import { useDB } from '../contexts/DatabaseContext'
-import { signInAnonymously } from 'firebase/auth'
+import { Box, Text, Heading, Checkbox, Button } from '@chakra-ui/react'
 
 const ConsentFrom = ({ onStatusChange }) => {
   const [isChecked, setIsChecked] = useState(false)
 
   const handleCheckboxChange = () => setIsChecked(!isChecked)
 
-  const changeGame = useCallback(() => {
-    onStatusChange.on(true)
-  }, [onStatusChange.on])
-
-  const { anonymouslySignIn } = useAuth()
-  const { setData } = useDB()
-  const [loading, setLoading] = useState(false)
+  // const changeGame = useCallback(() => {
+  //   onStatusChange.on(true)
+  // }, [onStatusChange.on])
   const navigate = useNavigate()
 
   async function handleSubmit(e) {
-    e.preventDefault()
-
-    try {
-      setLoading(true)
-      const uid = await anonymouslySignIn()
-      await setData(uid)
-      navigate('/')
-    } catch (e) {
-      console.log('Error:', e)
-    }
-    setLoading(false)
-    changeGame()
+    // e.preventDefault()
+    // try {
+    //   setLoading(true)
+    //   const uid = await anonymouslySignIn()
+    //   await setData(uid)
+    //   navigate('/')
+    // } catch (e) {
+    //   console.log('Error:', e)
+    // }
+    // setLoading(false)
+    // changeGame()
+    navigate('/game')
   }
 
   return (
@@ -181,7 +174,7 @@ const ConsentFrom = ({ onStatusChange }) => {
       </Heading>
       <Button
         onClick={handleSubmit}
-        isDisabled={!isChecked || loading}
+        isDisabled={!isChecked}
         _hover={{ bg: '#777' }}
         bg="#000"
         type="button"
