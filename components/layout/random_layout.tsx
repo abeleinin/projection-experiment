@@ -10,8 +10,6 @@ interface RandomLayoutProps {
   flashTile: string[]
   buttonPositions: any[]
   flashIntensity: string
-  width: number
-  height: number
 }
 
 const RandomLayout: React.FC<RandomLayoutProps> = memo(function RandomLayout({

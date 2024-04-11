@@ -12,11 +12,12 @@ export function useDB() {
 export function DatabaseProvider({ children }) {
   const { currentUser } = useAuth()
 
-  async function setData(uid) {
+  async function setData(uid, subjectId) {
     const docRef = doc(db, 'users', uid)
     const data = {
       joined: new Date(),
-      projection: []
+      projection: [],
+      subjectId: subjectId
     }
     await setDoc(docRef, data)
   }

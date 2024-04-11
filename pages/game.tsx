@@ -17,16 +17,21 @@ function VisualMemory() {
     i.toString()
   )
   const maskType = ['noMask', 'shuffleMask', 'invisibleMask', 'flashMask']
-  const trialCount = 30
+  const trialCount = 2
 
   const [restartGame, setRestartGame] = useState(false)
-
-  const [dimensions, setDimensions] = useState({ width: 0, height: 0 })
 
   const initMaskData = {
     score: 6,
     successCount: 0,
     correct: 0
+  }
+
+  const initShuffleMaskData = {
+    score: 6,
+    successCount: 0,
+    correct: 0,
+    shuffledTilePositions: []
   }
 
   const initResponseData = {
@@ -43,7 +48,7 @@ function VisualMemory() {
     isDisplay: false,
     userTurn: false,
     noMaskData: { ...initMaskData },
-    shuffleData: { ...initMaskData },
+    shuffleData: { ...initShuffleMaskData },
     invisibleData: { ...initMaskData },
     flashData: { ...initMaskData },
     userResponse: { ...initResponseData },
@@ -71,8 +76,6 @@ function VisualMemory() {
     invisibleData: {},
     flashData: {},
     boardData: [],
-    // tilePattern: {},
-    // tilePositions: [],
     mask: [],
     Date: new Date()
   })
@@ -221,13 +224,14 @@ function VisualMemory() {
   async function shuffleTiles() {
     let positions = []
     let maxLeft, maxTop, maxRight, maxBottom
-    numberList.forEach(() => {
+    numberList.forEach(k => {
       let newPos, overlap
       do {
         newPos = {
           left: Math.floor(40 * Math.random()),
           top: Math.floor(40 * Math.random())
         }
+        newPos.key = k
         newPos.right = newPos.left + PAD
         newPos.bottom = newPos.top + PAD
         overlap = checkOverlap(newPos, positions)
@@ -238,7 +242,6 @@ function VisualMemory() {
       Math.min(newPos.top, maxTop)
       positions.push(newPos)
     })
-    setDimensions({ width: maxRight - maxLeft, height: maxBottom - maxTop })
     setButtonPositions(positions)
     setShuffleArangement(positions)
   }
@@ -270,6 +273,7 @@ function VisualMemory() {
         setFlashTile([])
         await timeout(500)
         shuffleTiles()
+        play.shuffleData.shuffledTilePositions = buttonPositions
         break
     }
 
@@ -440,8 +444,6 @@ function VisualMemory() {
             flashTile={flashTile}
             buttonPositions={buttonPositions}
             flashIntensity={currFlashIntensity}
-            width={dimensions.width}
-            height={dimensions.height}
           />
         </Box>
       </Board>
@@ -449,9 +451,31 @@ function VisualMemory() {
   } else if (isOver) {
     return (
       <Board>
-        <Box>
-          {/* <Heading size="2xl" color="#fff"></Heading> */}
-          <Text fontSize="xl">Thank you for participating!</Text>
+        <Box fontSize="24px" color="#fff">
+          <Heading size="2xl" my={4}>
+            Thank you for participating!
+          </Heading>
+          <Text fontSize="xl">
+            The task is now complete. You'll receive credit for your
+            <br />
+            participation within 24 hours after completing the experiment. If
+            <br />
+            you're interested, the research relating to this task aims to
+            <br />
+            explore a visual short-term memory strategy where information is
+            <br />
+            spatially projected onto the external world to be remembered. The
+            <br />
+            different distractors within the task examine aspects of visual
+            <br />
+            memory, and we wish to understand how performance on each supports
+            <br />
+            our theory of externalized visual memory compared to traditional
+            <br />
+            theories primarily focused on strictly internal processes within the
+            <br />
+            brain. Again, thank you for participating!
+          </Text>
         </Box>
       </Board>
     )
@@ -459,17 +483,21 @@ function VisualMemory() {
     return (
       <Board>
         <Titlescreen title="Instructions" onStatusChange={{ on: setIsOn }}>
-          In the following task, you'll briefly be shown a pattern of white
+          In the following task, a random arrangement of tiles will be shown
           <br />
-          tiles on a board. Your task is to memorize this pattern. Once the
+          structured as a board. Briefly, a pattern of white tiles will flash on
           <br />
-          pattern disappears, you will need to recreate it by clicking on the
+          the board. Your task is to memorize this pattern. Once the pattern
           <br />
-          locations where you recall the white tiles were displayed. Be aware
+          disappears, you will need to recreate the pattern by clicking on the
           <br />
-          that throughout the task, various distractions may be introduced, such
+          tile locations where you recall the white tiles were displayed. Be
           <br />
-          as board rearrangement, flashing, or vanishing. Good luck!
+          aware that after the pattern is shown, various distractions may be
+          <br />
+          presented, including temporary board rearrangement, flashing, or
+          <br />
+          vanishing. Good luck!
         </Titlescreen>
       </Board>
     )
