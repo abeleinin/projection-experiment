@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react'
-import { onAuthStateChanged, signInAnonymously } from 'firebase/auth'
+import { onAuthStateChanged, signInAnonymously, signOut } from 'firebase/auth'
 import { getAuth } from 'firebase/auth'
 import { auth } from '../firebase'
 
@@ -17,8 +17,8 @@ export function AuthProvider({ children }) {
     const auth = getAuth()
     return signInAnonymously(auth)
       .then(result => {
-        console.log('Signed in anonymously')
-        console.log(result.user.uid)
+        // console.log('Signed in anonymously')
+        // console.log(result.user.uid)
         return result.user.uid
       })
       .catch(error => {
@@ -27,24 +27,6 @@ export function AuthProvider({ children }) {
         console.error(errorCode, errorMessage)
       })
   }
-
-  // function createUser(email, password) {
-  //   return createUserWithEmailAndPassword(auth, email, password)
-  //     .then(function (result) {
-  //       return result.user.uid
-  //     })
-  //     .catch(function (error) {
-  //       console.log(error)
-  //     })
-  // }
-
-  // function loginUser(email, password) {
-  //   return signInWithEmailAndPassword(auth, email, password)
-  // }
-
-  // function logoutUser() {
-  //   return signOut(auth)
-  // }
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, user => {

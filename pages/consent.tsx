@@ -7,26 +7,6 @@ const ConsentFrom = ({ onStatusChange }) => {
 
   const handleCheckboxChange = () => setIsChecked(!isChecked)
 
-  // const changeGame = useCallback(() => {
-  //   onStatusChange.on(true)
-  // }, [onStatusChange.on])
-  const navigate = useNavigate()
-
-  async function handleSubmit(e) {
-    // e.preventDefault()
-    // try {
-    //   setLoading(true)
-    //   const uid = await anonymouslySignIn()
-    //   await setData(uid)
-    //   navigate('/')
-    // } catch (e) {
-    //   console.log('Error:', e)
-    // }
-    // setLoading(false)
-    // changeGame()
-    navigate('/game')
-  }
-
   return (
     <Box id="consent" p="2">
       <Text p="1">IRB Study #2001686712</Text>
@@ -173,7 +153,7 @@ const ConsentFrom = ({ onStatusChange }) => {
         Protocol 2001686712 IRB Approved
       </Heading>
       <Button
-        onClick={handleSubmit}
+        onClick={onStatusChange}
         isDisabled={!isChecked}
         _hover={{ bg: '#777' }}
         bg="#000"

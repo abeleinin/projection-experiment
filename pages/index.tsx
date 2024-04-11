@@ -28,12 +28,8 @@ function Home() {
   }
 
   function generateRandomID() {
-    // Generate a random number between 0 and 99999999
     const randomNumber = Math.floor(Math.random() * 100000000)
-
-    // Convert it to a string. If it's less than 8 digits, pad with leading zeroes
     const randomID = randomNumber.toString().padStart(8, '0')
-
     return randomID
   }
 
@@ -49,11 +45,11 @@ function Home() {
         subjectID = generateRandomID()
       }
       await setData(uid, subjectID)
-      navigate('/')
     } catch (e) {
       console.log('Error:', e)
     }
     setLoading(false)
+    navigate('/game')
   }
   return <ConsentFrom onStatusChange={handleSubmit} />
 }
