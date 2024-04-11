@@ -17,7 +17,7 @@ function VisualMemory() {
     i.toString()
   )
   const maskType = ['noMask', 'shuffleMask', 'invisibleMask', 'flashMask']
-  const trialCount = 2
+  const trialCount = 30
 
   const [restartGame, setRestartGame] = useState(false)
 
@@ -312,6 +312,7 @@ function VisualMemory() {
           play.currTilePattern.length ===
           new Set(play.userResponse.userGuess).size
         ) {
+          setPlay({ ...play, userTurn: false })
           await timeout(500)
           setRewardTile(play.currTilePattern)
           await timeout(500)
