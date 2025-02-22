@@ -1,5 +1,5 @@
 {
-  "name": "Projection-game",
+  "name": "Projective-memory",
   "version": "1.0.0",
   "description": "Visual-spatial memory game to study the cogntive effects of projection",
   "main": "index.js",
@@ -12,18 +12,19 @@
     "deploy": "gh-pages -d build"
   },
   "keywords": [],
-  "author": "Abe Leinigner",
+  "author": "Anonymous",
   "license": "MIT",
   "dependencies": {
     "@chakra-ui/card": "^2.1.4",
     "@chakra-ui/icons": "^2.0.9",
-    "@chakra-ui/react": "^2.3.2",
-    "@emotion/react": "^11.10.4",
-    "@emotion/styled": "^11.10.4",
+    "@chakra-ui/provider": "^2.4.2",
+    "@chakra-ui/react": "^2.10.6",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
     "dotenv": "^16.3.1",
-    "firebase": "^9.23.0",
-    "framer-motion": "^7.3.4",
-    "next": "^12.3.0",
+    "firebase": "^11.3.1",
+    "framer-motion": "^7.10.3",
+    "next": "^15.1.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.6.1"
@@ -34,6 +35,7 @@
     "eslint": "^8.23.1",
     "eslint-config-next": "^12.3.0",
     "gh-pages": "^5.0.0",
-    "prettier": "^2.7.1"
+    "prettier": "^2.7.1",
+    "typescript": "5.7.3"
   }
 }
