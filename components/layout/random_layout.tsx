@@ -21,7 +21,6 @@ const RandomLayout: React.FC<RandomLayoutProps> = memo(function RandomLayout({
   buttonPositions,
   flashIntensity
 }) {
-  console.log(buttonPositions)
   if (buttonPositions.length == 0) {
     return (
       <Box></Box>
