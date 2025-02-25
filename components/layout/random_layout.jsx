@@ -1,18 +1,7 @@
 import { Box, Button } from '@chakra-ui/react'
 import { memo } from 'react'
 
-interface RandomLayoutProps {
-  numberList: string[]
-  // eslint-disable-next-line no-unused-vars
-  tileClickHandle: (number: any) => Promise<void>
-  rewardTile: string[]
-  wrongTile: string[]
-  flashTile: string[]
-  buttonPositions: any[]
-  flashIntensity: string
-}
-
-const RandomLayout: React.FC<RandomLayoutProps> = memo(function RandomLayout({
+const RandomLayout = memo(function RandomLayout({
   numberList,
   tileClickHandle,
   rewardTile,
@@ -22,9 +11,7 @@ const RandomLayout: React.FC<RandomLayoutProps> = memo(function RandomLayout({
   flashIntensity
 }) {
   if (buttonPositions.length == 0) {
-    return (
-      <Box></Box>
-    )
+    return <Box></Box>
   } else {
     return (
       <Box position="relative" width="40vw" height="80vh">
@@ -38,8 +25,8 @@ const RandomLayout: React.FC<RandomLayoutProps> = memo(function RandomLayout({
               rewardTile.includes(v)
                 ? '#38DC35'
                 : wrongTile.includes(v)
-                ? 'red'
-                : 'white'
+                  ? 'red'
+                  : 'white'
             }
             p="2em"
             rounded="md"

@@ -90,15 +90,15 @@ function VisualMemory() {
   // Turn on game
   useEffect(() => {
     if (isOn) {
-      let maskDistribution = [];
+      let maskDistribution = []
       maskType.forEach(m => {
         for (let i = 0; i < trialCount; i++) {
-          maskDistribution.push(m);
+          maskDistribution.push(m)
         }
-      });
-      let mask = maskDistribution.sort(() => 0.5 - Math.random());
-  
-      setPlay({ ...initPlay, mask: mask, isDisplay: true });
+      })
+      let mask = maskDistribution.sort(() => 0.5 - Math.random())
+
+      setPlay({ ...initPlay, mask: mask, isDisplay: true })
     }
   }, [isOn])
 
